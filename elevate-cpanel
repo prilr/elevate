@@ -1109,6 +1109,10 @@ sub run_stage_4 ($self) {
             }
 
             ssystem_and_die(qw{/usr/bin/dnf clean all});
+            ssystem(qw{ls /etc/yum.repos.d});
+            ssystem(qw{cat /etc/yum.repos.d/cloudlinux.repo});
+            ssystem(qw{grep "cloudlinux-base" /etc/yum.repos.d/*});
+
             ssystem(qw{/usr/bin/dnf config-manager --dump});
             ssystem(qw{/usr/bin/dnf repolist --refresh --verbose});
 
