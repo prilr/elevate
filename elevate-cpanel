@@ -903,7 +903,9 @@ EOS
 
     say <<EOS;
 This is your last chance to cleanly cancel the update process.
-You can hit CTRL-C to abort, otherwise the install starts in a few seconds.
+Make sure you've checked the logs and reports, as well as have a backup prepared.
+Even if you followed the preparation steps correctly, the chance of the upgrade going wrong remains non-zero.
+You can hit CTRL-C to abort, otherwise the install will start in a few seconds.
 EOS
 
     do { sleep 1; print '.' }
@@ -1094,7 +1096,6 @@ sub run_stage_4 ($self) {
         sysup => sub {
             Cpanel::Yum::Vars::install();
             ssystem_and_die(qw{/usr/bin/dnf clean all});
-            ssystem_and_die(qw{/usr/bin/rm -rf /var/cache/dnf});
 
             unless ( $self->upgrade_to_cloudlinux() ) {
                 # no failures once already installed: no need to check for the epel-release version
@@ -1106,7 +1107,11 @@ sub run_stage_4 ($self) {
                 local $ENV{'CPANEL_BASE_INSTALL'} = 1;    # Don't fix more than perl itself.
                 ssystem(qw{/usr/local/cpanel/scripts/fix-cpanel-perl});
             }
-            ssystem(qw{/usr/bin/dnf -y --allowerasing --skip-broken --nobest update});
+            ssystem(qw{/usr/bin/dnf config-manager --dump});
+            ssystem(qw{/usr/bin/dnf repolist -v});
+
+            ssystem(qw{/usr/bin/dnf makecache});
+            ssystem(qw{/usr/bin/dnf -y --allowerasing --skip-broken --nobest --refresh update});
             ssystem_and_die(qw{/usr/local/cpanel/scripts/sysup});
 
             return;
@@ -1200,7 +1205,7 @@ sub run_stage_5 ($self) {
     restore_outdated_services();
 
     INFO("Updating all packages before final reboot");
-    ssystem(qw{/usr/bin/dnf -y --allowerasing update});
+    ssystem_and_die(qw{/usr/bin/dnf -y --allowerasing --skip-broken --nobest --refresh update});
 
     $self->elevation_success_marker();
 
