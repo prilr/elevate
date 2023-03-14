@@ -586,13 +586,6 @@ sub run_service_and_notify ($self) {
     };
 
     if ($ok) {
-
-        # only notify a success when reaching the last stage
-        if ( $stage == VALID_STAGES ) {
-            update_stage_file( { status => q[success] } );
-            $self->_notify_success();
-        }
-
         reboot() if $out == REBOOT_NEEDED;
     }
     else {
@@ -943,9 +936,7 @@ sub run_stage_2 ($self) {
     $self->elevation_startup_marker($sum);
 
     ssystem(qw{/usr/bin/yum clean all});
-    unless ( $self->upgrade_to_cloudlinux() ) {
-        ssystem_and_die(qw{/scripts/update-packages});
-    }
+    ssystem_and_die(qw{/scripts/update-packages});
     ssystem_and_die(qw{/usr/bin/yum -y update});
 
     disable_all_cpanel_services();
@@ -1209,12 +1200,15 @@ sub run_stage_5 ($self) {
         add_final_notification( $final_notice, 1 );
     }
 
-    $self->elevation_success_marker();
-
     restore_outdated_services();
 
     INFO("Updating all packages before final reboot");
     ssystem(qw{/usr/bin/dnf -y --allowerasing update});
+
+    $self->elevation_success_marker();
+
+    update_stage_file( { status => q[success] } );
+    $self->_notify_success();
 
     my $pretty_distro_name = $self->upgrade_to_pretty_name();
     print_box("Great SUCCESS! Your upgrade to $pretty_distro_name is complete.");
@@ -1873,7 +1867,7 @@ sub _do_leapp_upgrade {
 
     my $ok = eval {
         local $ENV{LEAPP_OVL_SIZE} = 3000;
-        ssystem_and_die( { keep_env => 1 }, qw{/usr/bin/leapp upgrade} );
+            ssystem_and_die( { keep_env => 1 }, qw{/usr/bin/leapp upgrade} );
         1;
     };
 
