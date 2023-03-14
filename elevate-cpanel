@@ -3004,7 +3004,7 @@ sub _blocker_cpanel_needs_update ($self) {
 }
 
 sub _blocker_is_non_centos7 ($self) {
-    unless ( Cpanel::OS::major() == 7 ) ) {
+    unless ( Cpanel::OS::major() == 7 ) {
         my $pretty_distro_name = $self->upgrade_to_pretty_name();
         $self->has_blocker( 3, qq[This script is only designed to upgrade CentOS 7 or CloudLinux 7 to $pretty_distro_name.] );
     }
