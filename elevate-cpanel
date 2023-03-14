@@ -2186,26 +2186,36 @@ sub kernel_check ($self) {
 }
 
 sub backup_eaphp_configs {
-    my @ea_versions = qw{ea-php51 ea-php52 ea-php53 ea-php54 ea-php55 ea-php56 ea-php70 ea-php71 ea-php72 ea-php73 ea-php74 ea-php80 ea-php81};
-
-    foreach my $v (@ea_versions) {
-        my $config_path = "/opt/cpanel/$v/root/etc/php.ini";
-        if (-f $config_path) {
-            backup_3rdparty_file($config_path);
+    if ( opendir( my $dfh, '/opt/cpanel' ) ) {
+        my @ea_versions = grep { m/^ea-php/ } readdir $dfh;
+        foreach my $v (@ea_versions) {
+            my $config_path = "/opt/cpanel/$v/root/etc/php.ini";
+            if ( -f $config_path ) {
+                backup_3rdparty_file($config_path);
+            }
         }
+    }
+    else {
+        ERROR(qq{Could not read directory '/opt/cpanel': $!});
+        return 0;
     }
 
     return;
 }
 
 sub restore_eaphp_configs {
-    my @ea_versions = qw{ea-php51 ea-php52 ea-php53 ea-php54 ea-php55 ea-php56 ea-php70 ea-php71 ea-php72 ea-php73 ea-php74 ea-php80 ea-php81};
-
-    foreach my $v (@ea_versions) {
-        my $config_path = "/opt/cpanel/$v/root/etc/php.ini";
-        if (-f $config_path) {
-            restore_3rdparty_file($config_path);
+    if ( opendir( my $dfh, '/opt/cpanel' ) ) {
+        my @ea_versions = grep { m/^ea-php/ } readdir $dfh;
+        foreach my $v (@ea_versions) {
+            my $config_path = "/opt/cpanel/$v/root/etc/php.ini";
+            if ( -f $config_path ) {
+                restore_3rdparty_file($config_path);
+            }
         }
+    }
+    else {
+        ERROR(qq{Could not read directory '/opt/cpanel': $!});
+        return 0;
     }
 
     return;
