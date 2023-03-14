@@ -2858,8 +2858,10 @@ sub restore_perl_xs ($path) {
     if ( $path eq DISTRO_PERL_XS_PATH ) {
         my $rpms = $stash->{'restore'}->{ DISTRO_PERL_XS_PATH() }->{'rpm'};
 
-        my @cmd = ( '/usr/bin/dnf', '-y', '--enablerepo=epel', '--enablerepo=powertools', 'install', sort keys %$rpms );
-        ssystem(@cmd);
+        if ( length $rpms ) {
+            my @cmd = ( '/usr/bin/dnf', '-y', '--enablerepo=epel', '--enablerepo=powertools', 'install', sort keys %$rpms );
+            ssystem(@cmd);
+        }
     }
 
     my $cpan_modules = $stash->{$path}->{'cpan'} // return;
