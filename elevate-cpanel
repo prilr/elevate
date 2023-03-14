@@ -1106,7 +1106,7 @@ sub run_stage_4 ($self) {
         sysup => sub {
             Cpanel::Yum::Vars::install();
             ssystem_and_die(qw{/usr/bin/dnf clean all});
-            ssystem_and_die(qw{/usr/bin/rm -r /var/cache/dnf});
+            ssystem_and_die(qw{/usr/bin/rm -rf /var/cache/dnf});
 
             unless ( $self->upgrade_to_cloudlinux() ) {
                 # no failures once already installed: no need to check for the epel-release version
