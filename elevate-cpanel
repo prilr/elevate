@@ -1107,8 +1107,10 @@ sub run_stage_4 ($self) {
                 local $ENV{'CPANEL_BASE_INSTALL'} = 1;    # Don't fix more than perl itself.
                 ssystem(qw{/usr/local/cpanel/scripts/fix-cpanel-perl});
             }
+
+            ssystem_and_die(qw{/usr/bin/dnf clean all});
             ssystem(qw{/usr/bin/dnf config-manager --dump});
-            ssystem(qw{/usr/bin/dnf repolist -v});
+            ssystem(qw{/usr/bin/dnf repolist --refresh --verbose});
 
             ssystem(qw{/usr/bin/dnf makecache});
             ssystem(qw{/usr/bin/dnf -y --allowerasing --skip-broken --nobest --refresh update});
