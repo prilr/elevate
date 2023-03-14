@@ -1864,11 +1864,8 @@ sub _do_leapp_upgrade {
 
     my $ok = eval {
         local $ENV{LEAPP_OVL_SIZE} = 3000;
-        if $self->upgrade_to_cloudlinux {
-            ssystem_and_die( { keep_env => 1 }, qw{/usr/bin/leapp upgrade --nowarn} );
-        } else {
-            ssystem_and_die( { keep_env => 1 }, qw{/usr/bin/leapp upgrade} );
-        }
+        # TODO: check for OS before using flag
+        ssystem_and_die( { keep_env => 1 }, qw{/usr/bin/leapp upgrade --nowarn} );
         1;
     };
 
