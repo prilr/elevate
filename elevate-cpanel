@@ -879,6 +879,38 @@ sub run_stage_1 ($self) {
         return 1;
     }
 
+    my $pretty_distro_name = $self->upgrade_to_pretty_name();
+
+    print_box(qq[/!\ Warning: You are about to convert your cPanel & WHM CentOS 7 to $pretty_distro_name server.]);
+
+    say <<'EOS';
+
+The elevation process can take several long minutes and requires multiple reboots.
+Some reboots can be longer than normal, please do not interrupt the process.
+
+Please *do not interrupt* the reboots and elevation process.
+
+You can check at any time the current status of the update by running:
+
+    /scripts/elevate-cpanel
+
+On failures after fixing them you can continue the elevation process by running:
+
+    /scripts/elevate-cpanel --continue
+
+EOS
+
+    _do_warn_skip_version_check() if $self->getopt('skip-cpanel-version-check');    # give one last reminder
+
+    say <<EOS;
+This is your last chance to cleanly cancel the update process.
+You can hit CTRL-C to abort, otherwise the install starts in a few seconds.
+EOS
+
+    do { sleep 1; print '.' }
+      for 1 .. 6;
+    print "\n";
+
     print_box( "Starting stage 1 of " . VALID_STAGES . ": Installing " . SERVICE_NAME . " service" );
 
     # store 'upgrade_to' early so later stages can access it
