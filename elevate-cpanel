@@ -197,7 +197,7 @@ use Cpanel::Yum::Vars           ();
 use constant VERSION => 6;
 #>>V *** DO NOT EDIT THESE LINES MANUALLY ***
 
-use constant DEFAULT_ELEVATE_BASE_URL => 'https://raw.githubusercontent.com/cpanel/elevate/release/';
+use constant DEFAULT_ELEVATE_BASE_URL => 'https://raw.githubusercontent.com/cloudlinux/elevate/cloudlinux-release/';
 
 use constant CHKSRVD_SUSPEND_FILE => q[/var/run/chkservd.suspend];
 use constant ELEVATE_BLOCKER_FILE => '/var/cpanel/elevate-blockers';
