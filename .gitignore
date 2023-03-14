@@ -8,3 +8,4 @@
 .tdy
 /tags
 *.code-workspace
+.vscode/*
