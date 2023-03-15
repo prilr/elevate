@@ -516,12 +516,15 @@ EOS
     _do_warn_skip_version_check() if $self->getopt('skip-cpanel-version-check');    # give one last reminder
 
     say <<EOS;
-This is your chance now to cancel the update process.
-You can hit CTRL-C to abort, otherwise the install starts in a few seconds.
+This is the last step before the main upgrade process begins.
+We guarantee the functionality of CloudLinux products, but any third-party unsupported software can encounter unpredictable issues, with up to fatal consequences for the system.
+Creating a backup of the system and all DBs before proceeding is strongly recommended.
+Make sure you've run the pre-upgrade check and checked all logs and reports (/var/log/leapp/*, /var/log/elevate-cpanel.log).
+You can hit CTRL-C to abort, otherwise the install will start in a few seconds.
 EOS
 
     do { sleep 1; print '.' }
-      for 1 .. 6;
+      for 1 .. 20;
     print "\n";
 
     return;
