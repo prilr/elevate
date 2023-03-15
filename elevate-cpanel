@@ -1213,9 +1213,8 @@ sub run_stage_5 ($self) {
     INFO("Updating all packages before final reboot");
     ssystem_and_die(qw{/usr/bin/dnf -y --allowerasing --skip-broken --nobest --refresh update});
 
-    $self->elevation_success_marker();
-
     update_stage_file( { status => q[success] } );
+    $self->elevation_success_marker();
     $self->_notify_success();
 
     my $pretty_distro_name = $self->upgrade_to_pretty_name();
