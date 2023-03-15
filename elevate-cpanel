@@ -1022,11 +1022,11 @@ sub run_stage_3 ($self) {
             # This also potentially removes
             ssystem(q{/usr/bin/rpm -e --justdb --nodeps `/usr/bin/rpm -qa | /usr/bin/egrep '^cpanel-.*\.x86_64'`});
 
+            unless ( $self->upgrade_to_cloudlinux() ) {
             # remove all ea- packages
             ssystem(q{/usr/bin/yum -y erase ea-*});
 
             # Leapp handles EPEL on CloudLinux
-            unless ( $self->upgrade_to_cloudlinux() ) {
                 foreach my $rpm (qw/ yum-plugin-fastestmirror epel-release/) {
                     next unless Cpanel::Pkgr::is_installed($rpm);
                     ssystem( '/usr/bin/rpm', '-e', '--nodeps', $rpm );
