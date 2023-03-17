@@ -1083,9 +1083,10 @@ sub run_stage_4 ($self) {
             ssystem(qw{cat /etc/yum.repos.d/cloudlinux.repo});
 
             ssystem(qw{/usr/bin/dnf config-manager --dump});
-            ssystem(qw{/usr/bin/dnf repolist --refresh --verbose});
 
             ssystem(qw{/usr/bin/dnf makecache});
+            ssystem(qw{/usr/bin/dnf repolist --refresh --verbose});
+
             ssystem(qw{/usr/bin/dnf -y --allowerasing --refresh update});
             ssystem_and_die(qw{/usr/local/cpanel/scripts/sysup});
 
