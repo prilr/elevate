@@ -57,6 +57,8 @@ Helps to upgrade CentOS 7 cPanel servers to AlmaLinux 8 or Rocky Linux 8, as wel
        --skip-elevate-version-check   Skip the check for whether this script is up to date.
        --skip-cpanel-version-check    Skip the check for whether cPanel is up to date.
                                       This option is intended only for testing!
+       --skip-vetted-repo-check       Skip the check for whether the list of present package repositories is supported.
+                                      This option is intended only for testing!
 
        --help                         Display this documentation.
 
@@ -281,13 +283,13 @@ use constant VETTED_YUM_REPO => qw{
   almalinux-powertools.repo
   almalinux-resilientstorage.repo
   cloudlinux.repo
+  cloudlinux-rollout.repo
+  cloudlinux-compat.repo
+  cloudlinux-imunify360.repo
   cloudlinux-ea4.repo
   cloudlinux-ea4-testing.repo
   cloudlinux-ea4-rollout.repo
   cloudlinux-ea4-testing.repo
-  cloudlinux-rollout.repo
-  cloudlinux-compat.repo
-  cloudlinux-imunify360.repo
   cl-mysql.repo
 }, DISABLE_MYSQL_YUM_REPOS;
 
@@ -308,7 +310,7 @@ use constant UPGRADE_TO_CLOUDLINUX     => q[CloudLinux];
 sub _OPTIONS {
     return qw(
       service start clean continue manual-reboots status log check:s
-      skip-cpanel-version-check skip-elevate-version-check
+      skip-cpanel-version-check skip-elevate-version-check skip-vetted-repo-check
       update version
       upgrade-to=s
     );
@@ -3867,7 +3869,7 @@ sub _check_yum_repos ($self) {
             return unless length $current_repo_name;
             return unless $current_repo_enabled;
 
-            if ( !$vetted{$f} ) {
+            if ( !$self->getopt('skip-vetted-repo-check') && !$vetted{$f} ) {
                 $status_mask |= _CHECK_YUM_REPO_BITMASK_UNVETTED;
                 if ( my $total_pkg = scalar get_installed_rpms_in_repo($current_repo_name) ) {
                     ERROR(
