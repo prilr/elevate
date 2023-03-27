@@ -1,44 +1,44 @@
 ---
-title: "cPanel ELevate CentOS 7 to AlmaLinux 8"
+title: "cPanel ELevate CloudLinux 7 to CloudLinux 8"
 date: 2022-12-07T08:53:47-05:00
 draft: false
 layout: single
 ---
 
-# Welcome to the cPanel ELevate Project.
+# Welcome to the cPanel ELevate Project - CloudLinux variant.
 
 ## Goal
 
-The cPanel ELevate Project provides a script to upgrade an existing `cPanel & WHM` [CentOS&nbsp;7](https://centos.org) server installation to [AlmaLinux&nbsp;8](https://almalinux.org) or [Rocky&nbsp;Linux&nbsp;8](https://rockylinux.org).
+The [cPanel ELevate Project](https://github.com/cpanel/elevate) provides a script to upgrade an existing `cPanel & WHM` [CentOS&nbsp;7](https://centos.org) server installation to [AlmaLinux&nbsp;8](https://almalinux.org) or [Rocky&nbsp;Linux&nbsp;8](https://rockylinux.org).
+
+This repository contains a modification of said script that allows upgrading from CloudLinux 7 server installations to CloudLinux 8.
 
 ## Disclaimer
 
-We do not guarantee the functionality of software in this repository.  We provide it on an experimental basis only. You assume all risk for use of any software that you install from this experimental repository. Installation of this software could cause significant functionality failures, even for experienced administrators.
-
-cPanel Technical Support is limited in their ability to support experimental software. You should instead utilize the [Github Issues page](https://github.com/cpanel/elevate/issues)
+The functionality of software in this repository is not guaranteed.  We provide it on an experimental basis only. You assume all risk for use of any software that you install from this experimental repository. Installation of this software could cause significant functionality failures, even for experienced administrators.
 
 ## Introduction
 
-- [Issues can be reported here](https://github.com/cpanel/elevate/issues)
-- [Pull requests are welcome](https://github.com/cpanel/elevate/pulls)
-    - Code contributions are subject to our [Contributor License Agreement](docs/cPanel-CLA.pdf)
+- [Issues can be reported here](https://github.com/cloudlinux/elevate/issues)
+- [Pull requests are welcome](https://github.com/cloudlinux/elevate/pulls)
 
-This project builds on the [Alma Linux ELevate](https://wiki.almalinux.org/elevate/ELevate-quickstart-guide.html) project, which leans heavily on the [LEAPP Project](https://leapp.readthedocs.io/en/latest/) created for in-place upgrades of RedHat-based systems.
+This project builds on the [Alma Linux ELevate](https://wiki.almalinux.org/elevate/ELevate-quickstart-guide.html) project and its modification, [CloudLinux ELevate](https://docs.cloudlinux.com/elevate/), which lean heavily on the [LEAPP Project](https://leapp.readthedocs.io/en/latest/) created for in-place upgrades of RedHat-based systems.
 
-The [Alma Linux ELevate](https://wiki.almalinux.org/elevate/ELevate-quickstart-guide.html) project is very effective at upgrading the distro packages from [CentOS&nbsp;7](https://centos.org/) to [AlmaLinux&nbsp;8](https://almalinux.org/) or [Rocky&nbsp;Linux&nbsp;8](https://rockylinux.org). However if you attempt use it directly on a CentOS 7-based [cPanel&nbsp;install](https://cpanel.net/), you will end up with a broken system.
+The [Alma Linux ELevate](https://wiki.almalinux.org/elevate/ELevate-quickstart-guide.html) project is effective at upgrading the distro packages from [CentOS&nbsp;7](https://centos.org/) to [AlmaLinux&nbsp;8](https://almalinux.org/) or [Rocky&nbsp;Linux&nbsp;8](https://rockylinux.org). Its modification, [CloudLinux ELevate](https://docs.cloudlinux.com/elevate/) is also capable of upgrading CloudLinux 7 systems to CloudLinux 8.
 
-This project was designed to be a wrapper around the [Alma Linux ELevate](https://wiki.almalinux.org/elevate/ELevate-quickstart-guide.html) project to allow you to successfully upgrade a [cPanel install](https://cpanel.net/) with an aim to minimize outages.
+However if you attempt use them directly on a CentOS 7 or CloudLinux 7-based [cPanel&nbsp;install](https://cpanel.net/), you will end up with a broken system.
+
+This project was designed to be a wrapper around the **ELevate** project to allow you to successfully upgrade a [cPanel install](https://cpanel.net/) with an aim to minimize outages.
 
 ### Our current approach can be summarized as:
 
 1. [Check for blockers](https://cpanel.github.io/elevate/blockers/)
 2. `yum update && reboot`
 3. Analyze and remove software (not data) commonly installed on a cPanel system
-4. [Execute AlmaLinux upgrade](https://wiki.almalinux.org/elevate/ELevate-quickstart-guide.html)
+4. [Execute the Leapp upgrade](https://docs.cloudlinux.com/elevate/)
 5. Re-install previously removed software detected prior to upgrade. This might include:
   * cPanel (upcp)
   * EA4
-  * MySQL variants
   * Distro Perl/PECL binary re-installs
 6. Final reboot (assure all services are running on new binaries)
 
@@ -63,21 +63,18 @@ Before updating, please check that you met all the pre requirements:
 * You should back up your server before attempting this upgrade
 * Ensure your server is up to date: `yum update`
 * Ensure you are using the last stable version of cPanel & WHM
-* Use a version of MySQL/MariaDB compliant with Alamlinux 8.
 
 Additional checks can be performed by [downloading the script](#download-the-elevate-cpanel-script)
 and then [running pre-checks](#pre-upgrade-checks).
 
 ### Some of the problems you might find include:
 
-* x86_64 RPMs not in the primary CentOS repos are upgraded.
-  * `rpm -qa|grep el7`
 * EA4 RPMs are incorrect
   * EA4 provides different dependencies and linkage on C7/A8
 * cPanel binaries (cpanelsync) are invalid.
-* 3rdparty repo packages are not upgraded (imunify 360, epel, ...).
+* 3rd-party repo packages are not upgraded.
 * Manually installed Perl XS (arch) CPAN installs invalid.
-* Manually installed PECL need re-build.
+* Manually installed PECL need to be re-built.
 * Cpanel::CachedCommand is wrong.
 * Cpanel::OS distro setting is wrong.
 * MySQL might now not be upgradable (MySQL versions < 8.0 are not normally present on A8).
@@ -91,7 +88,7 @@ and then [running pre-checks](#pre-upgrade-checks).
 
 ```bash
 wget -O /scripts/elevate-cpanel \
-    https://raw.githubusercontent.com/cpanel/elevate/release/elevate-cpanel ;
+    https://raw.githubusercontent.com/cloudlinux/elevate/cloudlinux-release/elevate-cpanel ;
 chmod 700 /scripts/elevate-cpanel
 ```
 
@@ -99,16 +96,10 @@ chmod 700 /scripts/elevate-cpanel
 
 We recommend you check for known blockers before you upgrade. The check is designed to not make any changes to your system.
 
-You can check if your system is ready to upgrade to **AlmaLinux 8** by running:
+You can check if your system is ready to upgrade by running:
 ```bash
-# Check AlmaLinux 8 upgrade (dry run mode)
-/scripts/elevate-cpanel --check --upgrade-to=almalinux
-```
-
-You can check if your system is ready to upgrade to **Rocky Linux 8** by running:
-```bash
-# Check Rocky Linux 8 upgrade (dry run mode)
-/scripts/elevate-cpanel --check --upgrade-to=rocky
+# Check upgrade eligibility (dry run mode)
+/scripts/elevate-cpanel --check # defaults to CloudLinux if run on CloudLinux, AlmaLinux otherwise
 ```
 
 ### To upgrade
@@ -119,17 +110,13 @@ Once you have a backup of your server (**The cPanel elevate script does not back
 unreachable during this time.
 
 
-You can upgrade to **AlmaLinux 8** by running:
+You can start the upgrade by running:
 ```bash
-# Start the migration to AlmaLinux 8
-/scripts/elevate-cpanel --start --upgrade-to=almalinux
+# Start the migration
+/scripts/elevate-cpanel --start
 ```
 
-You can upgrade to **Rocky Linux 8** by running:
-```bash
-# Start the migration to Rocky Linux 8
-/scripts/elevate-cpanel --start --upgrade-to=rocky
-```
+CloudLinux 7 systems are automatically upgraded to CloudLinux 8.
 
 ### Command line options
 
@@ -138,14 +125,10 @@ You can upgrade to **Rocky Linux 8** by running:
 /scripts/elevate-cpanel --help
 
 # Check if your server is ready for elevation (dry run mode)
-/scripts/elevate-cpanel --check # defaults to AlmaLinux
-/scripts/elevate-cpanel --check --upgrade-to=almalinux
-/scripts/elevate-cpanel --check --upgrade-to=rocky
+/scripts/elevate-cpanel --check # defaults to CloudLinux if run on CloudLinux
 
 # Start the migration
-/scripts/elevate-cpanel --start # defaults to AlmaLinux
-/scripts/elevate-cpanel --start --upgrade-to=almalinux
-/scripts/elevate-cpanel --start --upgrade-to=rocky
+/scripts/elevate-cpanel --start # defaults to CloudLinux if run on CloudLinux
 
 ... # expect multiple reboots (~30 min)
 
@@ -155,31 +138,31 @@ You can upgrade to **Rocky Linux 8** by running:
 # Monitor the elevation log
 /scripts/elevate-cpanel --log
 
-# In case of errors, once fixed you can continue the migration process
+# In case of errors, once fixed, you can continue the migration process
 /scripts/elevate-cpanel --continue
 ```
 
-## SumUp of upgrade process
+## Upgrade process overview
 
 The elevate process is divided in multiple `stages`.
-Each `stage` is repsonsible for one part of the upgrade.
-Between each stage a `reboot` is performed before doing a final reboot at the very end.
+Each `stage` is responsible for one part of the upgrade.
+Between stages, a `reboot` is performed, with one last reboot at the end of the final stage.
 
 ### Stage 1
 
-Start the elevation process by installing the `elevate-cpanel` service responsible of the multiple reboots.
+Start the elevation process by installing the `elevate-cpanel` service responsible for controlling the upgrade process between multiple reboots.
 
 ### Stage 2
 
 Update the current distro packages.
-Disable cPanel services and setup motd.
+Disable cPanel services and setup the custom upgrade MOTD.
 
 ### Stage 3
 
-Setup the `elevate-release-latest-el7` repo and install leapp packages.
+Setup the Leapp ELevate package repository and install Leapp packages.
 Prepare the cPanel packages for the update.
 
-Remove some known conflicting packages and backup some existing configurations. (these packages will be reinstalled druing the next stage).
+Remove some known conflicting packages and back up some existing configurations. These packages will be reinstalled later.
 
 Provide answers to a few leapp questions.
 
@@ -189,10 +172,10 @@ In case of failure you probably want to reply to a few extra questions or remove
 
 ### Stage 4
 
-At this stage we should now run Alamalinux 8 (or RockyLinux 8).
+At this stage we should now run CloudLinux 8.
 Update cPanel product for the new distro.
 
-Restore removed packages during the previous stage.
+Restore the packages that were removed during the previous stage.
 
 ### Stage 5
 
@@ -235,7 +218,7 @@ After addressing the reported issues, you can continue an existing elevation pro
 
 ### I need more help?
 
-You can report an issue to the [Github Issues page](https://github.com/cpanel/elevate/issues)
+You can report an issue to the [Github Issues page](https://github.com/cloudlinux/elevate/issues)
 
 ## Copyright
 
