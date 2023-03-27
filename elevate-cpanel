@@ -199,7 +199,7 @@ use Cpanel::Yum::Vars           ();
 use constant VERSION => 6;
 #>>V *** DO NOT EDIT THESE LINES MANUALLY ***
 
-use constant DEFAULT_ELEVATE_BASE_URL => 'https://raw.githubusercontent.com/prilr/elevate/cloudlinux/';
+use constant DEFAULT_ELEVATE_BASE_URL => 'https://raw.githubusercontent.com/cloudlinux/elevate/cloudlinux-release/';
 
 use constant CHKSRVD_SUSPEND_FILE => q[/var/run/chkservd.suspend];
 use constant ELEVATE_BLOCKER_FILE => '/var/cpanel/elevate-blockers';
@@ -287,7 +287,6 @@ use constant VETTED_YUM_REPO => qw{
   cloudlinux-compat.repo
   cloudlinux-imunify360.repo
   cloudlinux-ea4.repo
-  cloudlinux-ea4-testing.repo
   cloudlinux-ea4-rollout.repo
   cloudlinux-ea4-testing.repo
   cl-mysql.repo
@@ -1093,7 +1092,6 @@ sub run_stage_4 ($self) {
             ssystem_and_die(qw{/usr/bin/dnf clean all});
 
             ssystem(qw{ls /etc/yum.repos.d});
-            ssystem(qw{cat /etc/yum.repos.d/cloudlinux.repo});
 
             ssystem(qw{/usr/bin/dnf config-manager --dump});
 
