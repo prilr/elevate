@@ -63,6 +63,7 @@ Before updating, please check that you met all the pre requirements:
 * You should back up your server before attempting this upgrade
 * Ensure your server is up to date: `yum update`
 * Ensure you are using the last stable version of cPanel & WHM
+* Ensure that you have the package `ea-cpanel-tools` >= 1.0-67.el7.cloudlinux installed
 
 Additional checks can be performed by [downloading the script](#download-the-elevate-cpanel-script)
 and then [running pre-checks](#pre-upgrade-checks).
