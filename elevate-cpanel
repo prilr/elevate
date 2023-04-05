@@ -376,10 +376,14 @@ sub run ($self) {
 
 sub _parse_opt_upgrade_to ($self) {
     # --upgrade-to option ignored on CloudLinux.
-    if ( Cpanel::OS::distro() eq 'cloudlinux' && Cpanel::OS::major() == 7  ) {
-        $self->{upgrade_to} = UPGRADE_TO_CLOUDLINUX;
+    if ( Cpanel::OS::distro() eq 'cloudlinux' ) {
+        if ( Cpanel::OS::major() == 7 ) {
+            $self->{upgrade_to} = UPGRADE_TO_CLOUDLINUX;
 
-        return;
+            return;
+        } else {
+            die qq[Only upgrading from CloudLinux 7 is currently supported\n];
+        }
     }
 
     return unless my $flavor = $self->getopt('upgrade-to');
