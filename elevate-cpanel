@@ -376,10 +376,11 @@ sub run ($self) {
 
 sub _parse_opt_upgrade_to ($self) {
     # --upgrade-to option ignored on CloudLinux.
+    my $stage = get_stage();
     if ( Cpanel::OS::distro() eq 'cloudlinux' ) {
-        if ( Cpanel::OS::major() == 7 ) {
+        # Allow starting upgrade only on CL7, but continuing on any version.
+        if ( Cpanel::OS::major() == 7 || $stage ) {
             $self->{upgrade_to} = UPGRADE_TO_CLOUDLINUX;
-
             return;
         } else {
             die qq[Only upgrading from CloudLinux 7 is currently supported\n];
